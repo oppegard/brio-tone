@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Swift Package Manager / build output
+/.build/
+Package.resolved
+
+# Assembled app bundle (produced by build.sh)
+/dist/
+
+# uvc-util sources & binary — fetched/compiled on demand by build.sh
+/.build-uvc/
+/Resources/uvc-util
+
+# Generated OBS LUTs — produced by obs-apple-look/generate_lut.py
+/obs-apple-look/*.cube
+
+# Xcode
+*.xcuserstate
+xcuserdata/
