@@ -279,7 +279,7 @@ struct ContentView: View {
 
     private var footer: some View {
         VStack(spacing: 10) {
-            Toggle("Apply my settings at login", isOn: $model.applyOnLaunch)
+            Toggle("Apply last settings when BrioTone starts", isOn: $model.applyOnLaunch)
                 .toggleStyle(.switch).controlSize(.mini).font(.caption)
             HStack {
                 Button("Reset to Logitech Defaults") { model.resetToCameraDefault() }
