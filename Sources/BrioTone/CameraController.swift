@@ -88,11 +88,11 @@ final class CameraController {
 
     // MARK: - Device discovery
 
-    /// Returns the first UVC device reported by `uvc-util -d`. The built-in
-    /// MacBook camera and Continuity iPhone camera are not UVC, so an external
-    /// webcam is normally the only entry.
+    /// Prefers a BRIO device reported by `uvc-util -d`, falling back to the
+    /// first UVC device when no BRIO is present.
     func detectDevice() -> Device? {
         let out = run(["-d"])
+        var firstDevice: Device?
         for line in out.split(separator: "\n") {
             // Data rows look like: "0   0x046d:0x0944   0x00100000   1.00   MX Brio"
             guard let match = line.range(of: #"0x[0-9a-fA-F]{4}:0x[0-9a-fA-F]{4}"#,
@@ -101,9 +101,11 @@ final class CameraController {
             // Name is everything after the UVC version token at the end.
             let cols = line.split(whereSeparator: { $0 == " " }).map(String.init)
             let name = cols.count >= 5 ? cols[4...].joined(separator: " ") : "Webcam"
-            return Device(vidpid: vidpid, name: name)
+            let device = Device(vidpid: vidpid, name: name)
+            if firstDevice == nil { firstDevice = device }
+            if name.localizedCaseInsensitiveContains("BRIO") { return device }
         }
-        return nil
+        return firstDevice
     }
 
     // MARK: - Read / write
