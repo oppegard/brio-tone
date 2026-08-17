@@ -4,14 +4,16 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP="dist/BrioTone.app"
+UVC_UTIL_SHA="8110da7025c95eea3096a7181af9a46c0cc7ac37"
 
-# Bootstrap the UVC control helper (uvc-util, MIT © Jeffrey Frey) from source if
-# it isn't present. We don't commit the binary — it's built locally on demand.
+# Bootstrap the UVC control helper (uvc-util, MIT © Jeffrey Frey) from pinned
+# source if the bundled binary isn't present.
 if [ ! -x "Resources/uvc-util" ]; then
   echo "▸ Compilando uvc-util (dependencia UVC, MIT)…"
   mkdir -p Resources
   TMP="$(mktemp -d)"
-  git clone --depth 1 https://github.com/jtfrey/uvc-util.git "$TMP" >/dev/null 2>&1
+  git clone --no-checkout https://github.com/jtfrey/uvc-util.git "$TMP" >/dev/null 2>&1
+  git -C "$TMP" checkout --detach "$UVC_UTIL_SHA" >/dev/null 2>&1
   clang -O2 -o "Resources/uvc-util" "$TMP"/src/*.m \
     -framework Foundation -framework IOKit -framework CoreFoundation
   rm -rf "$TMP"
