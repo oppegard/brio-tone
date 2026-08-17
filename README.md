@@ -1,5 +1,13 @@
 # BrioTone
 
+> [!NOTE]
+> This fork differs from the original repository:
+>
+> - Presents the application interface in English.
+> - Pins `uvc-util` to commit `8110da7` and includes a prebuilt ARM64 binary.
+> - Prefers a connected camera whose name contains `BRIO`, falling back to the
+>   first UVC device.
+
 > A minimalist macOS menu-bar app that fixes the color of the **Logitech MX Brio** (and other UVC webcams) at the **sensor level** — warm/cinematic presets, manual exposure & focus, and framing, applied to every app at once with **no virtual camera**.
 
 ![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-000000?logo=apple&logoColor=white)
@@ -58,7 +66,7 @@ cd brio-tone
 open dist/BrioTone.app # a camera icon appears in the menu bar
 ```
 
-`build.sh` compiles the [`uvc-util`](https://github.com/jtfrey/uvc-util) helper from source on first run (no binaries are committed to this repo), builds the Swift package, assembles the `.app`, and ad-hoc signs it.
+`build.sh` uses the bundled [`uvc-util`](https://github.com/jtfrey/uvc-util) helper when present. If it is missing, the script compiles it from pinned source. It then builds the Swift package, assembles the `.app`, and ad-hoc signs it.
 
 To launch automatically: **System Settings → General → Login Items → +** and add `dist/BrioTone.app`.
 
