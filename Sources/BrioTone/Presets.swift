@@ -150,11 +150,11 @@ final class PresetStore {
     private let stateURL: URL
 
     static let builtIns: [Preset] = [
-        Preset(name: "🎬 Cine — Cálido (1/60)", state: .cineWarm, builtIn: true),
-        Preset(name: "🎬 Cine — Plano/Neutro", state: .cineFlat, builtIn: true),
-        Preset(name: "🎬 Cine — Low Key (noche)", state: .cineLowKey, builtIn: true),
-        Preset(name: "Apple-ish (cálido)", state: .appleish, builtIn: true),
-        Preset(name: "Neutro", state: .neutral, builtIn: true),
+        Preset(name: "🎬 Cinema — Warm (1/60)", state: .cineWarm, builtIn: true),
+        Preset(name: "🎬 Cinema — Flat/Neutral", state: .cineFlat, builtIn: true),
+        Preset(name: "🎬 Cinema — Low Key (Night)", state: .cineLowKey, builtIn: true),
+        Preset(name: "Apple-ish (Warm)", state: .appleish, builtIn: true),
+        Preset(name: "Neutral", state: .neutral, builtIn: true),
         Preset(name: "Logitech (default)", state: .cameraDefault, builtIn: true),
     ]
 

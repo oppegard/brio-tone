@@ -7,7 +7,7 @@ struct ContentView: View {
     @State private var tab: Tab = .color
 
     enum Tab: String, CaseIterable, Identifiable {
-        case color = "Color", exposure = "Exposición", frame = "Encuadre"
+        case color = "Color", exposure = "Exposure", frame = "Framing"
         var id: String { rawValue }
     }
 
@@ -53,7 +53,7 @@ struct ContentView: View {
                 Image(systemName: "arrow.clockwise")
             }
             .buttonStyle(.borderless)
-            .help("Volver a buscar la cámara")
+            .help("Search for the camera again")
         }
     }
 
@@ -67,14 +67,14 @@ struct ContentView: View {
                 }
                 if model.presets.contains(where: { !$0.builtIn }) {
                     Divider()
-                    Menu("Eliminar preset…") {
+                    Menu("Delete Preset…") {
                         ForEach(model.presets.filter { !$0.builtIn }) { preset in
                             Button(preset.name, role: .destructive) { model.deletePreset(preset) }
                         }
                     }
                 }
             } label: {
-                Label("Cargar preset", systemImage: "slider.horizontal.3")
+                Label("Load Preset", systemImage: "slider.horizontal.3")
             }
             .menuStyle(.borderlessButton)
             .disabled(model.device == nil)
@@ -87,15 +87,15 @@ struct ContentView: View {
                 Image(systemName: "plus.circle")
             }
             .buttonStyle(.borderless)
-            .help("Guardar ajustes actuales como preset")
+            .help("Save current settings as a preset")
             .popover(isPresented: $showingSave, arrowEdge: .bottom) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Nombre del preset").font(.caption).foregroundStyle(.secondary)
-                    TextField("Ej. Llamada día", text: $newPresetName)
+                    Text("Preset Name").font(.caption).foregroundStyle(.secondary)
+                    TextField("e.g. Daytime Call", text: $newPresetName)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: 200)
                         .onSubmit(save)
-                    Button("Guardar", action: save)
+                    Button("Save", action: save)
                         .keyboardShortcut(.defaultAction)
                         .disabled(newPresetName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
@@ -115,17 +115,17 @@ struct ContentView: View {
     private var colorSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             whiteBalanceSection
-            sliderRow("Saturación", value: $model.state.saturation, control: .saturation, range: 0...255)
-            sliderRow("Contraste", value: $model.state.contrast, control: .contrast, range: 0...255)
-            sliderRow("Nitidez", value: $model.state.sharpness, control: .sharpness, range: 0...255)
-            sliderRow("Brillo", value: $model.state.brightness, control: .brightness, range: 0...255)
+            sliderRow("Saturation", value: $model.state.saturation, control: .saturation, range: 0...255)
+            sliderRow("Contrast", value: $model.state.contrast, control: .contrast, range: 0...255)
+            sliderRow("Sharpness", value: $model.state.sharpness, control: .sharpness, range: 0...255)
+            sliderRow("Brightness", value: $model.state.brightness, control: .brightness, range: 0...255)
         }
     }
 
     private var whiteBalanceSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("Balance de blancos").font(.subheadline.weight(.medium))
+                Text("White Balance").font(.subheadline.weight(.medium))
                 Spacer()
                 Toggle("Auto", isOn: Binding(
                     get: { model.state.autoWhiteBalance },
@@ -142,7 +142,7 @@ struct ContentView: View {
                     .font(.caption.monospacedDigit()).frame(width: 52, alignment: .trailing)
             }
             .disabled(model.state.autoWhiteBalance || model.device == nil)
-            Text("↑ número = más cálido en esta cámara. Ajusta mirando el vídeo en vivo.")
+            Text("↑ higher value = warmer on this camera. Adjust while watching live video.")
                 .font(.caption2).foregroundStyle(.secondary)
         }
     }
@@ -152,7 +152,7 @@ struct ContentView: View {
     private var exposureSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Exposición").font(.subheadline.weight(.medium))
+                Text("Exposure").font(.subheadline.weight(.medium))
                 Spacer()
                 Toggle("Auto", isOn: Binding(
                     get: { model.state.autoExposure },
@@ -163,13 +163,13 @@ struct ContentView: View {
             shutterRow
             sliderRow("ISO", value: $model.state.gain, control: .gain,
                       range: 0...255, disabledExtra: model.state.autoExposure)
-            Toggle("Compensar contraluz", isOn: Binding(
+            Toggle("Backlight Compensation", isOn: Binding(
                 get: { model.state.backlightCompensation },
                 set: { model.setBacklightCompensation($0) }
             ))
             .toggleStyle(.switch).controlSize(.mini).font(.subheadline)
             HStack {
-                Text("Anti-parpadeo").font(.subheadline)
+                Text("Flicker Reduction").font(.subheadline)
                 Spacer()
                 Picker("", selection: Binding(
                     get: { model.state.powerLine },
@@ -179,7 +179,7 @@ struct ContentView: View {
                 }
                 .pickerStyle(.segmented).labelsHidden().frame(width: 130)
             }
-            Text("Bloquea Auto y fija obturador + ISO para una imagen estable, sin \"bombeo\".")
+            Text("Turn off Auto and set Shutter + ISO for a stable image without exposure pumping.")
                 .font(.caption2).foregroundStyle(.secondary)
         }
     }
@@ -187,7 +187,7 @@ struct ContentView: View {
     /// Shutter shown as a 1/x second fraction (exposure-time-abs is in 0.1 ms).
     private var shutterRow: some View {
         HStack(spacing: 8) {
-            Text("Obturador").font(.subheadline).frame(width: 78, alignment: .leading)
+            Text("Shutter").font(.subheadline).frame(width: 78, alignment: .leading)
             Slider(value: Binding(
                 get: { Double(model.state.exposureTime) },
                 set: { v in model.state.exposureTime = Int(v); model.liveSet(.exposureTime, Int(v)) }
@@ -209,7 +209,7 @@ struct ContentView: View {
     private var frameSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Enfoque").font(.subheadline.weight(.medium))
+                Text("Focus").font(.subheadline.weight(.medium))
                 Spacer()
                 Toggle("Auto", isOn: Binding(
                     get: { model.state.autoFocus },
@@ -217,14 +217,14 @@ struct ContentView: View {
                 ))
                 .toggleStyle(.switch).controlSize(.mini)
             }
-            sliderRow("Distancia", value: $model.state.focus, control: .focus,
+            sliderRow("Distance", value: $model.state.focus, control: .focus,
                       range: 0...255, disabledExtra: model.state.autoFocus)
             zoomRow
             if model.state.zoom > 100 {
                 panTiltRow("Pan", value: model.state.pan) { model.setPanTilt(pan: $0, tilt: model.state.tilt) }
                 panTiltRow("Tilt", value: model.state.tilt) { model.setPanTilt(pan: model.state.pan, tilt: $0) }
             } else {
-                Text("Sube el zoom para reencuadrar con pan/tilt.")
+                Text("Increase zoom to reframe with pan/tilt.")
                     .font(.caption2).foregroundStyle(.secondary)
             }
         }
@@ -279,13 +279,13 @@ struct ContentView: View {
 
     private var footer: some View {
         VStack(spacing: 10) {
-            Toggle("Aplicar mis ajustes al iniciar sesión", isOn: $model.applyOnLaunch)
+            Toggle("Apply my settings at login", isOn: $model.applyOnLaunch)
                 .toggleStyle(.switch).controlSize(.mini).font(.caption)
             HStack {
-                Button("Restablecer Logitech") { model.resetToCameraDefault() }
+                Button("Reset to Logitech Defaults") { model.resetToCameraDefault() }
                     .controlSize(.small).disabled(model.device == nil)
                 Spacer()
-                Button("Salir") { NSApp.terminate(nil) }.controlSize(.small)
+                Button("Quit") { NSApp.terminate(nil) }.controlSize(.small)
             }
         }
     }

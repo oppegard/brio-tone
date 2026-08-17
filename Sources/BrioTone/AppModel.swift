@@ -9,7 +9,7 @@ final class AppModel: ObservableObject {
     @Published var applyOnLaunch: Bool {
         didSet { UserDefaults.standard.set(applyOnLaunch, forKey: "applyOnLaunch") }
     }
-    @Published var statusText: String = "Buscando cámara…"
+    @Published var statusText: String = "Searching for camera…"
 
     private let controller = CameraController()
     private let store = PresetStore()
@@ -25,7 +25,7 @@ final class AppModel: ObservableObject {
 
     func refreshDevice(initial: Bool = false) {
         guard let controller else {
-            statusText = "No se encontró uvc-util"
+            statusText = "uvc-util not found"
             return
         }
         Task.detached { [weak self] in
@@ -34,7 +34,7 @@ final class AppModel: ObservableObject {
                 guard let self else { return }
                 self.device = dev
                 guard let dev else {
-                    self.statusText = "No hay webcam UVC conectada"
+                    self.statusText = "No UVC webcam connected"
                     return
                 }
                 self.statusText = dev.name
